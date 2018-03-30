@@ -1,0 +1,2 @@
+# GKE Cloud Endpoints サンプル
+GKEにデプロイしたアプリケーションをCloud Endpointsを利用してAPIの管理をを行うサンプル

@@ -1,0 +1,61 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: echo-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: echo
+  ports:
+    - protocol: TCP
+      name: http
+      port: 80
+      targetPort: 8081
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: echo-deployment
+  labels:
+    app: echo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: echo
+  template:
+    metadata:
+      labels:
+        app: echo
+    spec:
+
+      # サービスアカウントキーファイルを使用する場合
+      # volumes:
+      #   - name: service-account-creds
+      #     secret:
+      #       secretName: service-account-creds
+
+      containers:
+        - name: esp
+          image: gcr.io/endpoints-release/endpoints-runtime:1
+          args: [
+            "--http_port", "8081",
+            "--backend", "127.0.0.1:8080",
+            "--service", "{SERVICE_NAME}",
+            "--version", "{SERVICE_VERSION}",
+            # "--service_account_key", "/etc/nginx/creds/service-account-cres.json", ローカルなどで実効する場合
+          ]
+          ports:
+            - containerPort: 8081
+          # サービスアカウントキーファイルを使用する場合
+          # volumeMounts:
+          #   - mountPath: /etc/nginx/creds
+          #     name: service-account-creds
+          #     readOnly: true
+
+        - name: echo
+          image: gcr.io/{PROJECT_ID}/endpoint-sample
+          ports:
+            - containerPort: 8080

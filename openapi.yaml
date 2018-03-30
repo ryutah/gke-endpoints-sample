@@ -1,0 +1,53 @@
+swagger: "2.0"
+
+# This is your document metadata
+info:
+  version: "1.0.0"
+  title: "Cloud Endpoints Sample"
+  description: |
+    サンプル・アプリケーション
+    
+host: echo-api.endpoints.{PROJECT_ID}.cloud.goog
+
+schemes:
+  - https
+
+basePath: /api/v1
+consumes:
+  - application/json
+produces:
+  - application/json
+
+paths:
+  "/echo":
+    post:
+      summary: サンプルエンドポイント
+      description: サンプルエンドポイント
+      operationId: echo
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/echoMessage'
+      parameters: 
+       - description: Message to echo
+         in: body
+         name: message
+         required: true
+         schema:
+           $ref: '#/definitions/echoMessage'
+      security: 
+        - api_key: []
+    
+
+definitions:
+  echoMessage:
+    properties:
+      message:
+        type: string
+        
+securityDefinitions:
+  api_key:
+    type: apiKey
+    name: key
+    in: query
